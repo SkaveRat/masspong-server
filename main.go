@@ -22,10 +22,14 @@ var state = State{
 	BallVector: [2]int{1, 1},
 	BoardSizeX: 40,
 	BoardSizeY: 17,
+	PaddleLength: 6,
+	PlayerOnePaddle: 9,
+	PlayerTwoPaddle: 3,
 }
 
 type Gamedata struct {
 	Size [2]int `json:"size"`
+	PaddleLength int `json:"paddleLength"`
 }
 
 func serveWs(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +45,10 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveGamedata(w http.ResponseWriter, r *http.Request) {
-	data := Gamedata{Size: [2]int{state.BoardSizeX, state.BoardSizeY}}
+	data := Gamedata{
+		Size: [2]int{state.BoardSizeX, state.BoardSizeY},
+		PaddleLength: state.PaddleLength,
+	}
 	jsonData,_ := json.Marshal(&data)
 	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:8000")
 	w.Write(jsonData)
