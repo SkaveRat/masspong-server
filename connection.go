@@ -1,9 +1,6 @@
 package main
 
-import (
-	"github.com/gorilla/websocket"
-	"fmt"
-)
+import "github.com/gorilla/websocket"
 
 // connection is an middleman between the websocket connection and the hub.
 type Connection struct {
@@ -31,7 +28,6 @@ func (c *Connection) writePump() {
 				return
 			}
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				fmt.Println("sending")
 				return
 			}
 		}
