@@ -31,12 +31,12 @@ func (s *State) Tick() {
 func (s *State) nextTickIsPaddle() bool {
 	nextStep := sumVector(s.BallPosition, s.BallVector)
 
-	paddleLength := 5
-
 	if(s.BallVector[0] > 0 && (nextStep[0] >= s.BoardSizeX-1)) { //moving right && is paddle-column
-		return (nextStep[1] >= s.PlayerTwoPaddle && nextStep[1] <= s.PlayerTwoPaddle + paddleLength)
+		paddleDiff := nextStep[1] - s.PlayerTwoPaddle
+		return (paddleDiff >= 0 && paddleDiff <= s.PaddleLength)
 	}else if(s.BallVector[0] < 0 && (nextStep[0] <= 0)){ // moving left && is paddle column
-		return (nextStep[1] >= s.PlayerOnePaddle && nextStep[1] <= s.PlayerOnePaddle + paddleLength)
+		paddleDiff := nextStep[1] - s.PlayerOnePaddle
+		return (paddleDiff >= 0 && paddleDiff <= s.PaddleLength)
 	}else{
 		return false
 	}

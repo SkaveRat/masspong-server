@@ -23,8 +23,8 @@ var state = State{
 	BoardSizeX: 40,
 	BoardSizeY: 17,
 	PaddleLength: 6,
-	PlayerOnePaddle: 9,
-	PlayerTwoPaddle: 3,
+	PlayerOnePaddle: 6,
+	PlayerTwoPaddle: 1,
 }
 
 type Gamedata struct {
