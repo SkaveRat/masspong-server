@@ -1,6 +1,10 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+	"regexp"
+	"strings"
+)
 
 type State struct {
 	BoardSizeX int `json:"-"`
@@ -16,6 +20,13 @@ type State struct {
 
 	PlayerOneScore int `json:"s1"`
 	PlayerTwoScore int `json:"s2"`
+
+	PlayerOneVotesUp   map[string]bool `json:"-"`
+	PlayerOneVotesDown map[string]bool `json:"-"`
+	PlayerTwoVotesUp   map[string]bool `json:"-"`
+	PlayerTwoVotesDown map[string]bool `json:"-"`
+
+	CommandChannel chan IncomingCommand `json:"-"`
 }
 
 func (s *State) Tick() {
@@ -105,4 +116,31 @@ func (s *State) reverseY() {
 
 func (s *State) moveBall() {
 	s.BallPosition = sumVector(s.BallPosition, s.BallVector)
+}
+
+func (s *State) listenIncomingCommands() {
+	for command := range s.CommandChannel {
+		matched,_ := regexp.Match(`^[1|2] (UP|DOWN|up|down)`, []byte(command.Command))
+		if(matched) {
+
+			cmd := strings.Replace(command.Command, "\n", "", 1)
+
+			splitted := strings.Split(cmd, " ")
+
+			matchDirection,_ := regexp.Match(`(up)`, []byte(splitted[1]))
+			if(splitted[0] == "1") {
+				if (matchDirection) {
+					s.PlayerOneVotesUp[command.Ip] = true
+				}else{
+					s.PlayerOneVotesDown[command.Ip] = true
+				}
+			}else{
+				if(matchDirection) {
+					s.PlayerTwoVotesUp[command.Ip] = true
+				}else{
+					s.PlayerTwoVotesDown[command.Ip] = true
+				}
+			}
+		}
+	}
 }
