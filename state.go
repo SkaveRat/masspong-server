@@ -30,14 +30,15 @@ type State struct {
 }
 
 func (s *State) Tick() {
-	s.movePaddles()
 
-	if (s.isHiddingBoardBorder()) {
-		s.reverseY()
-	}
+	s.movePaddles()
 
 	if (s.nextTickIsPaddle()) {
 		s.reverseX()
+	}
+
+	if (s.isHittingBoardBorder()) {
+		s.reverseY()
 	}
 
 	if (s.isOverPlayerOneBorder()) {
@@ -140,7 +141,7 @@ func (s *State) reverseX() {
 	s.BallVector = multiplyVector(s.BallVector, [2]int{-1, 1}) //reverse direction
 }
 
-func (s *State) isHiddingBoardBorder() bool {
+func (s *State) isHittingBoardBorder() bool {
 	return s.BallPosition[1] >= (s.BoardSizeY-1) || s.BallPosition[1] <= 0
 }
 
