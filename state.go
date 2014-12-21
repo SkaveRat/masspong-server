@@ -126,9 +126,6 @@ func (s *State) Reset(initialDirection int) {
 	}
 	s.BallPosition = [2]int{initialX, rand.Intn(s.BoardSizeY-1)}
 	s.BallVector = [2]int{initialDirection, 1}
-
-	s.PlayerOnePaddle = rand.Intn(s.BoardSizeY-s.PaddleLength)
-	s.PlayerTwoPaddle = rand.Intn(s.BoardSizeY-s.PaddleLength)
 }
 
 func (s *State) isOverPlayerOneBorder() bool {
