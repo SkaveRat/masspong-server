@@ -23,8 +23,8 @@ var state = State{
 	BoardSizeX: 40,
 	BoardSizeY: 17,
 	PaddleLength: 6,
-	PlayerOnePaddle: 6,
-	PlayerTwoPaddle: 1,
+	PlayerOnePaddle: 0,
+	PlayerTwoPaddle: 0,
 }
 
 type Gamedata struct {
@@ -68,7 +68,7 @@ func main() {
 
 func runGame() {
 
-	ticker := time.NewTicker(time.Millisecond * 100)
+	ticker := time.NewTicker(time.Millisecond * 50)
 
 	for _ = range ticker.C {
 		state.Tick()

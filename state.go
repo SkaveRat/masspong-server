@@ -1,5 +1,7 @@
 package main
 
+import "math/rand"
+
 type State struct {
 	BoardSizeX int `json:"-"`
 	BoardSizeY int `json:"-"`
@@ -11,6 +13,9 @@ type State struct {
 
 	PlayerOnePaddle int `json:"p1"`
 	PlayerTwoPaddle int `json:"p2"`
+
+	PlayerOneScore int `json:"s1"`
+	PlayerTwoScore int `json:"s2"`
 }
 
 func (s *State) Tick() {
@@ -22,8 +27,14 @@ func (s *State) Tick() {
 		s.reverseX()
 	}
 
-	if (s.isOverPlayerBorder()) {
-		s.Reset()
+	if (s.isOverPlayerOneBorder()) {
+		s.PlayerTwoScore++
+		s.Reset(1)
+	}
+
+	if (s.isOverPlayerTwoBorder()) {
+		s.PlayerOneScore++
+		s.Reset(-1)
 	}
 	s.moveBall()
 }
@@ -42,13 +53,26 @@ func (s *State) nextTickIsPaddle() bool {
 	}
 }
 
-func (s *State) Reset() {
-	s.BallPosition = [2]int{3,3}
-	s.BallVector = [2]int{1,1}
+func (s *State) Reset(initialDirection int) {
+	var initialX int;
+	if(initialDirection < 0 ) {
+		initialX = s.BoardSizeX - 3
+	}else{
+		initialX = 3
+	}
+	s.BallPosition = [2]int{initialX, rand.Intn(s.BoardSizeY-1)}
+	s.BallVector = [2]int{initialDirection,1}
+
+	s.PlayerOnePaddle = rand.Intn(s.BoardSizeY - s.PaddleLength)
+	s.PlayerTwoPaddle = rand.Intn(s.BoardSizeY - s.PaddleLength)
 }
 
-func (s *State) isOverPlayerBorder() bool{
-	return s.BallPosition[0] >= (s.BoardSizeX-1) || s.BallPosition[0] <= 0
+func (s *State) isOverPlayerOneBorder() bool{
+	return s.BallPosition[0] <= 0
+}
+
+func (s *State) isOverPlayerTwoBorder() bool{
+	return s.BallPosition[0] >= (s.BoardSizeX-1)
 }
 
 func (s *State) reverseX() {
