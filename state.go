@@ -23,7 +23,7 @@ func (s *State) Tick() {
 		s.reverseY()
 	}
 
-	if(s.nextTickIsPaddle()) {
+	if (s.nextTickIsPaddle()) {
 		s.reverseX()
 	}
 
@@ -42,36 +42,52 @@ func (s *State) Tick() {
 func (s *State) nextTickIsPaddle() bool {
 	nextStep := sumVector(s.BallPosition, s.BallVector)
 
-	if(s.BallVector[0] > 0 && (nextStep[0] >= s.BoardSizeX-1)) { //moving right && is paddle-column
+	if (s.BallVector[0] > 0 && (nextStep[0] >= s.BoardSizeX-1)) { //moving right && is paddle-column
 		paddleDiff := nextStep[1] - s.PlayerTwoPaddle
-		return (paddleDiff >= 0 && paddleDiff <= s.PaddleLength)
-	}else if(s.BallVector[0] < 0 && (nextStep[0] <= 0)){ // moving left && is paddle column
+		switch paddleDiff {
+		case 0: s.BallVector[1] = -1; break;
+		case 1: s.BallVector[1] = -1; break;
+		case 2: s.BallVector[1] = 0; break;
+		case 3: s.BallVector[1] = 0; break;
+		case 4: s.BallVector[1] = 1; break;
+		case 5: s.BallVector[1] = 1; break;
+		}
+		return (paddleDiff >= 0 && paddleDiff < s.PaddleLength)
+	}else if (s.BallVector[0] < 0 && (nextStep[0] <= 0)) { // moving left && is paddle column
 		paddleDiff := nextStep[1] - s.PlayerOnePaddle
-		return (paddleDiff >= 0 && paddleDiff <= s.PaddleLength)
-	}else{
+		switch paddleDiff {
+		case 0: s.BallVector[1] = -1; break;
+		case 1: s.BallVector[1] = -1; break;
+		case 2: s.BallVector[1] = 0; break;
+		case 3: s.BallVector[1] = 0; break;
+		case 4: s.BallVector[1] = 1; break;
+		case 5: s.BallVector[1] = 1; break;
+		}
+		return (paddleDiff >= 0 && paddleDiff < s.PaddleLength)
+	}else {
 		return false
 	}
 }
 
 func (s *State) Reset(initialDirection int) {
 	var initialX int;
-	if(initialDirection < 0 ) {
-		initialX = s.BoardSizeX - 3
-	}else{
+	if (initialDirection < 0 ) {
+		initialX = s.BoardSizeX-3
+	}else {
 		initialX = 3
 	}
 	s.BallPosition = [2]int{initialX, rand.Intn(s.BoardSizeY-1)}
-	s.BallVector = [2]int{initialDirection,1}
+	s.BallVector = [2]int{initialDirection, 1}
 
-	s.PlayerOnePaddle = rand.Intn(s.BoardSizeY - s.PaddleLength)
-	s.PlayerTwoPaddle = rand.Intn(s.BoardSizeY - s.PaddleLength)
+	s.PlayerOnePaddle = rand.Intn(s.BoardSizeY-s.PaddleLength)
+	s.PlayerTwoPaddle = rand.Intn(s.BoardSizeY-s.PaddleLength)
 }
 
-func (s *State) isOverPlayerOneBorder() bool{
+func (s *State) isOverPlayerOneBorder() bool {
 	return s.BallPosition[0] <= 0
 }
 
-func (s *State) isOverPlayerTwoBorder() bool{
+func (s *State) isOverPlayerTwoBorder() bool {
 	return s.BallPosition[0] >= (s.BoardSizeX-1)
 }
 

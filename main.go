@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/websocket"
 	"time"
 	"encoding/json"
+	"math/rand"
 )
 
 var upgrader = &websocket.Upgrader{}
@@ -55,6 +56,8 @@ func serveGamedata(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	rand.Seed( time.Now().UTC().UnixNano())
+
 	http.HandleFunc("/state", serveWs)
 	http.HandleFunc("/gamedata", serveGamedata)
 	go H.run()
