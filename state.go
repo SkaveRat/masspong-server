@@ -121,9 +121,9 @@ func (s *State) nextTickIsPaddle() bool {
 func (s *State) Reset(initialDirection int) {
 	var initialX int;
 	if (initialDirection < 0 ) {
-		initialX = s.BoardSizeX-3
+		initialX = s.BoardSizeX-10
 	}else {
-		initialX = 3
+		initialX = 10
 	}
 	s.BallPosition = [2]int{initialX, rand.Intn(s.BoardSizeY-1)}
 	s.BallVector = [2]int{initialDirection, 1}
