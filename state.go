@@ -13,7 +13,7 @@ type State struct {
 	PaddleLength int `json:"-"`
 
 	BallPosition [2]int `json:"b"`
-	BallVector [2]int `json:"-"`
+	BallVector   [2]int `json:"-"`
 
 	PlayerOnePaddle int `json:"p1"`
 	PlayerTwoPaddle int `json:"p2"`
@@ -30,6 +30,8 @@ type State struct {
 }
 
 func (s *State) Tick() {
+	s.movePaddles()
+
 	if (s.isHiddingBoardBorder()) {
 		s.reverseY()
 	}
@@ -47,7 +49,42 @@ func (s *State) Tick() {
 		s.PlayerOneScore++
 		s.Reset(-1)
 	}
+
 	s.moveBall()
+}
+
+func (s *State) movePaddles() {
+	playerOneDiff := len(s.PlayerOneVotesDown) - len(s.PlayerOneVotesUp)
+	playerTwoDiff := len(s.PlayerTwoVotesDown) - len(s.PlayerTwoVotesUp)
+
+
+	switch {
+	case playerOneDiff < 0:
+		s.PlayerOnePaddle--
+	case playerOneDiff == 0:
+	case playerOneDiff > 0:
+		s.PlayerOnePaddle++
+	}
+
+	switch {
+	case playerTwoDiff < 0:
+		s.PlayerTwoPaddle--
+	case playerTwoDiff == 0:
+	case playerTwoDiff > 0:
+		s.PlayerTwoPaddle++
+	}
+
+	if(s.PlayerOnePaddle < 0) {s.PlayerOnePaddle = 0}
+	if(s.PlayerOnePaddle > s.BoardSizeY - s.PaddleLength) {s.PlayerOnePaddle = s.BoardSizeY - s.PaddleLength}
+
+	if(s.PlayerTwoPaddle < 0) {s.PlayerTwoPaddle = 0}
+	if(s.PlayerTwoPaddle > s.BoardSizeY - s.PaddleLength) {s.PlayerTwoPaddle = s.BoardSizeY - s.PaddleLength}
+
+
+	s.PlayerOneVotesUp   = make(map[string]bool)
+	s.PlayerOneVotesDown = make(map[string]bool)
+	s.PlayerTwoVotesUp   = make(map[string]bool)
+	s.PlayerTwoVotesDown = make(map[string]bool)
 }
 
 func (s *State) nextTickIsPaddle() bool {

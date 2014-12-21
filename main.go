@@ -110,7 +110,7 @@ func handleInputConnection(conn net.Conn) {
 
 func runGame() {
 
-	ticker := time.NewTicker(time.Millisecond * 50)
+	ticker := time.NewTicker(time.Millisecond * 100)
 
 	for _ = range ticker.C {
 		state.Tick()
